@@ -18,6 +18,7 @@ Servo
  int i;
  motores=[motor1, motor4, motor1];
  valores=[0, 0, 0];
+ int valorant = 0;
 
  /*
   * PWMVALUE
@@ -99,17 +100,29 @@ double longitude   = doc["data"][1];
 */
 
 //add funtion to move servo
-void moveServo(String servo, int value){
-  if(value>0){
-    for (i=COUNT_LOW ; i < COUNT_HIGH ; i=i+100)
+void moveServo(int servo, int value){
+ 
+  if(value>valorant){ 
+    valorant=valor;
+    for (value=COUNT_LOW ; value < COUNT_HIGH ; value=value+100)
    {
-      ledcWrite(1, i);       // sweep servo 1
+      ledcWrite(servo, value);       // sweep servo 1
       delay(20);
    }
-    digitalWrite(servo, HIGH);
-    delay(value);
-    digitalWrite(servo, LOW);
-  } 
+   
+  } else if (value<valorant){
+    valorant=valor;
+    for (value=COUNT_HIGH ; value > COUNT_LOW ; value=value-100)
+   {
+      ledcWrite(servo, value);       // sweep servo 1
+      delay(20);
+   }
+  }
+  else if (value==valorant){
+    valorant=valor;
+    ledcWrite(servo, value);       // sweep servo 1
+    delay(20);
+  }
 }
  String getinfo(){
 
