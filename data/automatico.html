@@ -42,7 +42,7 @@
 
         <hr>
 
-        <h1 class="text-center">MODO TEST</h1>
+        <h1 class="text-center">MODO AUTOMATICO</h1>
 
         <hr>
 
@@ -70,12 +70,45 @@
         </div>
 
         <hr>
-        <div class="container text-center">
-            <button class="btn btn-outline-success">INICIAR</button>
-            <button class="btn btn-outline-danger">DETENER</button>
-        </div>
-
         
+        <div class="container w-50">
+            <div class="row mb-5">
+                <label for="motor" class="form-label" id="lableMotor">Base del motor</label>
+                <input type="range" class="form-range" min="0" max="100" id="motor" onchange="setValor(this.value)">
+            </div>
+            <h2 class="text-center" id="valor">Valor: </h2>
+            <div class="row mt-5">
+                <select class="form-select" aria-label="Default select example" onchange="setLabel()">
+                    <option value="0" selected>Base del robot</option>
+                    <option value="1">Brazo 1</option>
+                    <option value="2">Brazo 2</option>
+                    <option value="3">Garra</option>
+                </select>
+            </div>
+            <div class="row text-center">
+                <button type="button" class="btn btn-primary mt-5" id="btn1" onclick="enviar()">ENVIAR</button>
+            </div>
+        </div>
+        
+        <hr>
+
+        <h1 class="text-center">Instrucciones</h1>
+        <div class="container text-center w-50 bg-light">
+            <div class="row">
+                <table class="table-light" id="instrucciones">
+                    <thead>
+                        <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">MOTOR</th>
+                        <th scope="col">VALOR</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                    </tbody>
+                </table>
+            </div>
+        </div>
         <hr>
        
 
@@ -126,6 +159,8 @@
         </div>
 
         <script>
+            var motores = [];
+            var valores = [];
 
             var rssid = new RadialGauge({
                 renderTo: 'rssi',
@@ -214,7 +249,45 @@
 
             setInterval(getDataConexion, 1000);
 
+            function setValor(valor){
+                document.getElementById("valor").innerHTML = "Valor: " + valor;
+            }
 
+
+            function setLabel(){
+                var select = document.getElementById("lableMotor");
+                var index = document.getElementsByTagName("select")[0].value;
+                if(index == 0){
+                    select.textContent = "Base del robot";
+                }else if(index == 1){
+                    select.textContent = "Brazo 1";
+                }else if(index == 2){
+                    select.textContent = "Brazo 2";
+                }else if(index == 3){
+                    select.textContent = "Garra";
+                }
+            }
+
+            function enviar(){
+                const valor = document.getElementById("motor").value;
+                const motor = document.getElementById("lableMotor").textContent;
+                motores.push(motor);
+                valores.push(valor);
+                setInstrucciones();
+                //To do: enviar datos al servidor
+
+            }
+
+            function setInstrucciones(){
+                var table = document.getElementById("instrucciones");
+                var row = table.insertRow(1);
+                var cell1 = row.insertCell(0);
+                var cell2 = row.insertCell(1);
+                var cell3 = row.insertCell(2);
+                cell1.innerHTML = motores.length;
+                cell2.innerHTML = motores[motores.length - 1];
+                cell3.innerHTML = valores[valores.length - 1];
+            }
 
             
         </script>

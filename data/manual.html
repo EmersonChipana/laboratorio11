@@ -9,6 +9,7 @@
         <link href="https://fonts.googleapis.com/css2?family=Bungee+Spice&family=Righteous&display=swap" rel="stylesheet">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
         <script src="http://cdn.rawgit.com/Mikhus/canvas-gauges/gh-pages/download/2.1.7/all/gauge.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <link rel="stylesheet" type="text/css" href="style.css">
     </head>
     <body>
@@ -42,7 +43,7 @@
 
         <hr>
 
-        <h1 class="text-center">MODO TEST</h1>
+        <h1 class="text-center">MODO MANUAL</h1>
 
         <hr>
 
@@ -70,11 +71,27 @@
         </div>
 
         <hr>
-        <h1 class="text-center">Motorers</h1>
+        <h1 class="text-center">Motores</h1>
         <div class="container">
-            <div class="row">
-                <!-- slider boostrap -->
-                
+            <div class="row my-5">
+                <div class="col">
+                    <label for="motor1" class="form-label" id="label1">MOTOR 1</label>
+                    <input type="range" class="form-range" min="0" max="100" id="motor1" onchange="enviarValor(1)">
+                </div>
+                <div class="col">
+                    <label for="motor2" class="form-label" id="label2">MOTOR 2</label>
+                    <input type="range" class="form-range" min="0" max="100" id="motor2" onchange="enviarValor(2)">
+                </div>
+            </div>
+            <div class="row my-5">
+                <div class="col">
+                    <label for="motor3" class="form-label" id="label3">MOTOR 3</label>
+                    <input type="range" class="form-range" min="0" max="100" id="motor3" onchange="enviarValor(3)">
+                </div>
+                <div class="col">
+                    <label for="motor4" class="form-label" id="label4">MOTOR 4</label>
+                    <input type="range" class="form-range" min="0" max="100" id="motor4" onchange="enviarValor(4)">
+                </div>
             </div>
         </div>
         
@@ -214,17 +231,32 @@
                 xhr.send();
             }
 
-            setInterval(getDataConexion, 1000);
+            setInterval(getDataConexion, 10000);
 
             //post with ajax
 
+            function enviarValor(num){
+                const data = "motor"+num;
+                var valor = document.getElementById(data).value;
+                document.getElementById("label"+num).textContent = "MOTOR "+num+" : "+valor;
+                var dataString = "motor="+num+"&valor="+valor;
+                $.ajax({
+                    type: "POST",
+                    url: "/MOTOR"+num,
+                    data: dataString,
+                    success: function (response) {
+                        console.log(response);
+                    }
+                });
+            }
 
+           
 
 
             
         </script>
         
-
+        
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
     </body>
 </html>
