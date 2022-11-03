@@ -10,16 +10,12 @@ String estado="0";
 int valor=0;
 
 /*
-Sensor LMR35
+Servo
 */
-#define ADC_VREF_mV    3300.0 // 3.3v en millivoltios
-#define ADC_RESOLUTION 4096.0
-#define PIN_LM35       33 // ESP32 pin GIOP36 (ADC0) conectado al LM35
-#define factor 0.0805860805860
-
-int datoVal;
-float milliVolt,tempC,tempF;
-
+ #define COUNT_LOW 1638
+ #define COUNT_HIGH 7864
+ #define TIMER_WIDTH 16
+ int i;
 
  /*
   * PWMVALUE
@@ -146,7 +142,14 @@ void setup() {
 
   Serial.begin(115200); // inicializando el pouerto serial
 
-
+ledcSetup(1, 50, TIMER_WIDTH); // canal 1, 50 Hz, 16-bit width
+   ledcAttachPin(26, 1);   // GPIO 22 asignado al canal 1
+   ledcSetup(2, 50, TIMER_WIDTH); // canal 2, 50 Hz, 16-bit width
+   ledcAttachPin(25, 2);   // GPIO 19 asignado al canal 2
+ledcSetup(3, 50, TIMER_WIDTH); // canal 1, 50 Hz, 16-bit width
+   ledcAttachPin(32, 3);   // GPIO 22 asignado al canal 1
+   ledcSetup(4, 50, TIMER_WIDTH); // canal 2, 50 Hz, 16-bit width
+   ledcAttachPin(33, 4);   // GPIO 19 asignado al canal 2
   
   pinMode(rele,OUTPUT);
   pinMode(rele2,OUTPUT);
