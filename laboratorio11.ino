@@ -137,6 +137,8 @@ digitalWrite(ledAzul,255);
 }
 
 
+
+
 void setup() {
 
 
@@ -176,14 +178,18 @@ pinMode(ledAzul,OUTPUT);
     request->send(SPIFFS, "/index.html",String(), false);
     
   });   
-  server.on("/CONTROL", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send(SPIFFS, "/control.html",String(), false);
+  server.on("/MANUAL", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/manual.html",String(), false);
   });   
-  server.on("/HORARIO", HTTP_GET, [](AsyncWebServerRequest *request){
+
+  
+  server.on("/AUTOMATICO", HTTP_GET, [](AsyncWebServerRequest *request){
     estado="0";
-    request->send(SPIFFS, "/horario.html",String(), false);
-    
-  });    
+    request->send(SPIFFS, "/automatico.html",String(), false);
+
+  
+  }); 
+   
   server.on("/style.css", HTTP_GET, [](AsyncWebServerRequest *request){
             request->send(SPIFFS, "/style.css", "text/css");
             });      
@@ -249,6 +255,12 @@ digitalWrite(ledAzul,0);
     valor=pwmValue.toInt();
     request->redirect("/CONTROL");    
   });  
+  //ADD HTTP POST HANDLER FOR SERVO
+  server.on("/MOTOR1", HTTP_POST, [](AsyncWebServerRequest *request){
+    pwmValue = request->arg("motor");
+    valor=pwmValue.toInt();
+    request->redirect("/");    
+  }); 
 
   server.on("/TRUE", HTTP_GET, [](AsyncWebServerRequest *request){ 
     mod=true;
