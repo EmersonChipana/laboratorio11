@@ -82,10 +82,30 @@ void initWiFi() {
   // Imprimimos la ip que le ha dado nuestro router
   Serial.println(WiFi.localIP());
 }
+/*
+void abrirJson(){
+  char json[] = "{\"sensor\":\"gps\",\"time\":1351824120,\"data\":[48.756080,2.302038]}";
+
+DynamicJsonDocument doc(1024);
+deserializeJson(doc, json);
+
+int motSer=doc["mot"][0];
+int movi=doc["mov"][0];
+const char* sensor = doc["sensor"];
+long time          = doc["time"];
+double latitude    = doc["data"][0];
+double longitude   = doc["data"][1];
+}
+*/
 
 //add funtion to move servo
-void moveServo(int servo, int value){
+void moveServo(String servo, int value){
   if(value>0){
+    for (i=COUNT_LOW ; i < COUNT_HIGH ; i=i+100)
+   {
+      ledcWrite(1, i);       // sweep servo 1
+      delay(20);
+   }
     digitalWrite(servo, HIGH);
     delay(value);
     digitalWrite(servo, LOW);
@@ -101,15 +121,15 @@ void moveServo(int servo, int value){
   return jsonString;
 }
 
- String gettemp(){
+ String getserv(){
 // Lectura de los datos del sensor
   datoVal = analogRead(PIN_LM35);
-  temp["datoVal"]   = String(datoVal);
+  serv["datoVal"]   = String(datoVal);
    // Convirtiendo los datos del ADC a    milivoltios
-  temp["mil"] =  String(datoVal * (ADC_VREF_mV / ADC_RESOLUTION));
+  serv["mil"] =  String(datoVal * (ADC_VREF_mV / ADC_RESOLUTION));
   // Convirtiendo el voltaje al temperatura en °C
-  temp["tempC"] =  datoVal * factor ; 
-  temp["estado"]=estado;
+  serv["tempC"] =  datoVal * factor ; 
+  serv["estado"]=estado;
   String jsonString = JSON.stringify(temp);
   return jsonString;
 }
@@ -188,46 +208,6 @@ pinMode(ledAzul,OUTPUT);
   });
   
 
-
-server.on("/ON", HTTP_GET, [](AsyncWebServerRequest *request){
-             digitalWrite(rele, HIGH); 
-              digitalWrite(ledRojo,255);
-digitalWrite(ledVerde,0);
-digitalWrite(ledAzul,0);
-             //String json = getserv();
-             Serial.print("Encendido");
-           request->send(0);
-   // json = String();
-            });
-  server.on("/OFF", HTTP_GET, [](AsyncWebServerRequest *request){
-    digitalWrite(rele, LOW); 
-    digitalWrite(ledRojo,0);
-    digitalWrite(ledVerde,255);
-    digitalWrite(ledAzul,0);
-    Serial.print("Apagado");
-    request->send(0);
-            });
-//Ventilador 
-  server.on("/VON", HTTP_GET, [](AsyncWebServerRequest *request){
-    digitalWrite(rele2, HIGH); 
-    digitalWrite(rele3, HIGH);
-    //String json = getserv();
-    Serial.print("Encendido");
-    digitalWrite(ledRojo,0);
-    digitalWrite(ledVerde,0);
-    digitalWrite(ledAzul,255);
-    request->send(0);
-            });
-  server.on("/VOFF", HTTP_GET, [](AsyncWebServerRequest *request){
-    digitalWrite(rele2, LOW);
-    digitalWrite(rele3, LOW); 
-    digitalWrite(ledRojo,255);
-    digitalWrite(ledVerde,0);
-    digitalWrite(ledAzul,255);
-    Serial.print("Apagado");
-    request->send(0);
-            });
-
   server.on("/SET_POINT", HTTP_POST, [](AsyncWebServerRequest *request){
     pwmValue = request->arg("set_point");
     valor=pwmValue.toInt();
@@ -235,10 +215,30 @@ digitalWrite(ledAzul,0);
   });  
   //ADD HTTP POST HANDLER FOR SERVO
   server.on("/MOTOR1", HTTP_POST, [](AsyncWebServerRequest *request){
-    pwmValue = request->arg("motor");
+    pwmValue = request->arg("valor1");
     valor=pwmValue.toInt();
+     moveServo(1,pwmValue.toInt());
     request->redirect("/");    
   }); 
+  server.on("/MOTOR2", HTTP_POST, [](AsyncWebServerRequest *request){
+    pwmValue = request->arg("valor2");
+    valor=pwmValue.toInt();
+    moveServo(2,pwmValue.toInt());
+    request->redirect("/");    
+  }); 
+  server.on("/MOTOR3", HTTP_POST, [](AsyncWebServerRequest *request){
+    pwmValue = request->arg("valor3");
+    valor=pwmValue.toInt();
+    moveServo(3,pwmValue.toInt());
+    request->redirect("/");    
+  }); 
+  server.on("/MOTOR4", HTTP_POST, [](AsyncWebServerRequest *request){
+    pwmValue = request->arg("valor4");
+    valor=pwmValue.toInt();
+    moveServo(4,pwmValue.toInt());
+    request->redirect("/");    
+  }); 
+
 
   server.on("/TRUE", HTTP_GET, [](AsyncWebServerRequest *request){ 
     mod=true;
