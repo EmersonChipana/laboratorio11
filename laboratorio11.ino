@@ -125,7 +125,7 @@ void moveServo(int servo, int value){
 void setInstruction(int servo, int value){
     int motores[contador]=servo;
     int valores[contador]=value;
-    moveServo(motores[contador], valores[contador]=value);
+    moveServo(motores[contador], valores[contador]);
  contador++;
 
 }
@@ -262,5 +262,17 @@ server.on("/VALORES", HTTP_GET, [](AsyncWebServerRequest *request){
 
 void loop() {
 
-  
+  for (i=COUNT_LOW ; i < COUNT_HIGH ; i=i+100)
+   {
+      ledcWrite(1, i);       // sweep servo 1
+      delay(20);
+   }
+    
+   for (i=COUNT_HIGH ; i > COUNT_LOW ; i=i-100)
+   {
+      ledcWrite(1, i);       // sweep servo 2
+      delay(20);
+   }
+
+
 }
