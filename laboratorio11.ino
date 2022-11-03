@@ -16,9 +16,18 @@ Servo
  #define COUNT_HIGH 7864
  #define TIMER_WIDTH 16
  int i;
- motores=[motor1, motor4, motor1];
- valores=[0, 0, 0];
+ int motores=[];
+ int mot1=0;
+ int mot2=0;
+ int mot3=0;
+ int mot4=0;
+ int state1=0;
+ int state2=0;
+ int state3=0;
+ int state4=0;
+ int valores=[];
  int valorant = 0;
+ int contador=  1;
 
  /*
   * PWMVALUE
@@ -42,13 +51,6 @@ int ahora2 =1638;
 String pwmValue;
  
 
-int rele = 18;
-int rele2 =23;
-int rele3= 14;
-int ledRojo = 22;
-int ledVerde = 21;
-int ledAzul = 19;
-
 int color=1;
 
 
@@ -61,11 +63,7 @@ String header;
  
 
 JSONVar info;
-JSONVar temp;
-JSONVar luz;
-
-
-
+JSONVar serv;
 
 
 void initWiFi() {
@@ -124,6 +122,13 @@ void moveServo(int servo, int value){
     delay(20);
   }
 }
+void setInstruction(int servo, int value){
+    int motores[contador]=servo;
+    int valores[contador]=value;
+    moveServo(motores[contador], valores[contador]=value);
+ contador++;
+
+}
  String getinfo(){
 
   info["dip"] = String(WiFi.localIP());
@@ -135,16 +140,30 @@ void moveServo(int servo, int value){
 }
 
  String getserv(){
+  int tama=sizeof(motores[]);
+for(int j=0; j<tama;j++){
+  if(motores[j]==0){
+    state1=valores[j];
+  } else
+  if(motores[j]==1){
+    state2=valores[j];
+  } else if(motorees[j]==2){
+    state3=valores[j];
+  } else if(motores[j]==3){
+    state4=valores[j];
+  }
+}
+
+serv["estado"]=String ();
 // Lectura de los datos del sensor
-  datoVal = analogRead(PIN_LM35);
-  serv["datoVal"]   = String(datoVal);
+  serv["mot1"]   = String(state1);
    // Convirtiendo los datos del ADC a    milivoltios
-  serv["mil"] =  String(datoVal * (ADC_VREF_mV / ADC_RESOLUTION));
+  serv["mot2"] =  String(state2);
   // Convirtiendo el voltaje al temperatura en °C
-  serv["tempC"] =  datoVal * factor ; 
-  serv["estado"]=estado;
-  String jsonString = JSON.stringify(temp);
-  return jsonString;
+  serv["mot3"] = String(state3) ; 
+  serv["mot4"]=String(state4) ; 
+  String jsonString = JSON.stringify(serv);
+  return jsonString; 
 }
 
 
@@ -184,7 +203,7 @@ ledcSetup(3, 50, TIMER_WIDTH); // canal 1, 50 Hz, 16-bit width
   server.on("/MANUAL", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(SPIFFS, "/manual.html",String(), false);
   });   
-
+  
   
   server.on("/AUTOMATICO", HTTP_GET, [](AsyncWebServerRequest *request){
 
@@ -203,30 +222,35 @@ ledcSetup(3, 50, TIMER_WIDTH); // canal 1, 50 Hz, 16-bit width
     request->send(200, "application/json", json);
     json = String();
   });
-
+server.on("/VALORES", HTTP_GET, [](AsyncWebServerRequest *request){
+    String json = getserv();
+    request->send(200, "application/json", json);
+    json = String();
+  }); 
   //ADD HTTP POST HANDLER FOR SERVO
   server.on("/MOTOR1", HTTP_POST, [](AsyncWebServerRequest *request){
     pwmValue = request->arg("valor1");
     valor=pwmValue.toInt();
-     moveServo(1,pwmValue.toInt());
+     setInstruction(1,valor);
     request->redirect("/");    
   }); 
   server.on("/MOTOR2", HTTP_POST, [](AsyncWebServerRequest *request){
     pwmValue = request->arg("valor2");
     valor=pwmValue.toInt();
-    moveServo(2,pwmValue.toInt());
+    setInstruction(2,valor);
     request->redirect("/");    
   }); 
   server.on("/MOTOR3", HTTP_POST, [](AsyncWebServerRequest *request){
     pwmValue = request->arg("valor3");
     valor=pwmValue.toInt();
-    moveServo(3,pwmValue.toInt());
+    setInstruction(3,valor);
     request->redirect("/");    
   }); 
   server.on("/MOTOR4", HTTP_POST, [](AsyncWebServerRequest *request){
     pwmValue = request->arg("valor4");
     valor=pwmValue.toInt();
-    moveServo(4,pwmValue.toInt());
+    setInstruction(4,valor);
+   // moveServo(4,valor);
     request->redirect("/");    
   }); 
         
