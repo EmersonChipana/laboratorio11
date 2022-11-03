@@ -142,12 +142,6 @@ void setInstruction(int servo, int value){
  String getserv(){
   int tama=sizeof(motores[]);
 for(int j=0; j<tama;j++){
-  if(motores[j]==0){
-    state1=valores[0];
-    state2=valores[0];
-    state3=valores[0];
-    state4=valores[0];
-  } else
   if(motores[j]==1){
     state1=valores[j];
   } else if(motores[j]==2){
