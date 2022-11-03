@@ -177,7 +177,7 @@ ledcSetup(3, 50, TIMER_WIDTH); // canal 1, 50 Hz, 16-bit width
   //Serial.println(WiFi.localIP());
   // Route for root / web page
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
-    estado="0";
+   
     request->send(SPIFFS, "/index.html",String(), false);
     
   });   
