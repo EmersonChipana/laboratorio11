@@ -150,7 +150,7 @@ for(int j=0; j<tama;j++){
   } else
   if(motores[j]==1){
     state1=valores[j];
-  } else if(motorees[j]==2){
+  } else if(motores[j]==2){
     state2=valores[j];
   } else if(motores[j]==3){
     state3=valores[j];
