@@ -60,19 +60,19 @@
                 </div>
                 <div class="col">
                     <h2>BRAZO</h2>
-                    <img src="https://github.com/EmersonChipana/Datos/blob/main/brazo2.png?raw=true" alt="" class="brazo2 mt-3" width="250">
+                    <img src="https://github.com/EmersonChipana/Datos/blob/main/brazo2.png?raw=true" alt="" class="brazo2 mt-3" id="brazo2" width="250">
                 </div>
                 <div class="col">
                     <h2>GARRA</h2>
-                    <img src="https://cdn-icons-png.flaticon.com/512/44/44707.png" width="250" class="garra mt-3">
+                    <img src="https://cdn-icons-png.flaticon.com/512/44/44707.png" width="250" class="garra mt-3" id="garra">
                 </div>
             </div>
         </div>
 
         <hr>
         <div class="container text-center">
-            <button class="btn btn-outline-success">INICIAR</button>
-            <button class="btn btn-outline-danger">DETENER</button>
+            <button class="btn btn-outline-success" onclick="iniciarAnim()">INICIAR</button>
+            <button class="btn btn-outline-danger" onclick="paraAnim()">DETENER</button>
         </div>
 
         
@@ -214,8 +214,88 @@
 
             setInterval(getDataConexion, 1000);
 
+            function iniciarAnim(){
+                rotate();
+                upBrazo();
+                rightBrazo2();
+                resizeSmall();
+            }
 
+            function paraAnim(){
+                rotate();
+                downBrazo();
+                leftBrazo2();
+                resizeBig( );
+            }
 
+            function rotate(){
+                const rueda = document.getElementById("rueda");
+                rueda.style.animation = "rotateRight 2s infinite";
+                rueda.style.webkitAnimation = "rotateRight 2s infinite";
+                setTimeout(() => {
+                    rueda.style.animationPlayState = "paused";
+                    }, 3000);
+            }
+
+            function upBrazo(){
+                const brazo = document.getElementById("brazo");
+                brazo.style.animation = "up 2s infinite";
+                brazo.style.webkitAnimation = "up 2s infinite";
+                setTimeout(() => {
+                    brazo.style.animationPlayState = "paused";
+                    }, 3000);
+            }
+
+            function downBrazo(){
+                const brazo =document.getElementById("brazo");
+                brazo.style.animation = "down 2s infinite";
+                brazo.style.webkitAnimation = "down 2s";
+                setTimeout(() => {
+                    brazo.style.animation = "";
+                    brazo.style.webkitAnimation = "";
+                    }, 3000);
+                
+            }
+                      
+            function rightBrazo2(){
+                const brazo2 = document.getElementById("brazo2");
+                brazo2.style.animation = "right 2s infinite";
+                brazo2.style.webkitAnimation = "right 2s";
+                setTimeout(() => {
+                    brazo2.style.animation = "";
+                    brazo2.style.webkitAnimation = "";
+                    }, 3000);
+            }
+
+            function leftBrazo2(){
+                const brazo2 = document.getElementById("brazo2");
+                brazo2.style.animation = "left 2s infinite";
+                brazo2.style.webkitAnimation = "left 2s";
+                setTimeout(() => {
+                    brazo2.style.animation = "";
+                    brazo2.style.webkitAnimation = "";
+                    }, 3000);
+            }
+
+            function resizeSmall(){
+                const garra = document.getElementById("garra");
+                garra.style.animation = "resizeSmall 2s infinite";
+                garra.style.webkitAnimation = "resizeSmall 2s";
+                setTimeout(() => {
+                    garra.style.animation = "";
+                    garra.style.webkitAnimation = "";
+                    }, 3000);
+            }
+
+            function resizeBig(){
+                const garra = document.getElementById("garra");
+                garra.style.animation = "resizeBig 2s infinite";
+                garra.style.webkitAnimation = "resizeBig 2s";
+                setTimeout(() => {
+                    garra.style.animation = "";
+                    garra.style.webkitAnimation = "";
+                    }, 3000);
+            }
             
         </script>
         
