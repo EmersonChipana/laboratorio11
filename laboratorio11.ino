@@ -164,15 +164,7 @@ ledcSetup(3, 50, TIMER_WIDTH); // canal 1, 50 Hz, 16-bit width
    ledcSetup(4, 50, TIMER_WIDTH); // canal 2, 50 Hz, 16-bit width
    ledcAttachPin(33, 4);   // GPIO 19 asignado al canal 2
   
-  pinMode(rele,OUTPUT);
-  pinMode(rele2,OUTPUT);
-  pinMode(rele3,OUTPUT);
 
-  pinMode(33,INPUT);
-
-  pinMode(ledRojo,OUTPUT);
-pinMode(ledVerde,OUTPUT);
-pinMode(ledAzul,OUTPUT);
 
 //  DS18B20.begin();      // initializando el sensor DS18B20
   initWiFi();
@@ -195,7 +187,7 @@ pinMode(ledAzul,OUTPUT);
 
   
   server.on("/AUTOMATICO", HTTP_GET, [](AsyncWebServerRequest *request){
-    estado="0";
+
     request->send(SPIFFS, "/automatico.html",String(), false);
 
   
@@ -212,20 +204,6 @@ pinMode(ledAzul,OUTPUT);
     json = String();
   });
 
-
-  server.on("/TEMP", HTTP_GET, [](AsyncWebServerRequest *request){
-    datoVal=analogRead(33);
-    String json = gettemp();
-    request->send(200, "application/json", json);
-    json = String();
-  });
-  
-
-  server.on("/SET_POINT", HTTP_POST, [](AsyncWebServerRequest *request){
-    pwmValue = request->arg("set_point");
-    valor=pwmValue.toInt();
-    request->redirect("/CONTROL");    
-  });  
   //ADD HTTP POST HANDLER FOR SERVO
   server.on("/MOTOR1", HTTP_POST, [](AsyncWebServerRequest *request){
     pwmValue = request->arg("valor1");
@@ -251,63 +229,15 @@ pinMode(ledAzul,OUTPUT);
     moveServo(4,pwmValue.toInt());
     request->redirect("/");    
   }); 
-
-
-  server.on("/TRUE", HTTP_GET, [](AsyncWebServerRequest *request){ 
-    mod=true;
-    request->send(0);
-  });
-
-  server.on("/FALSE", HTTP_GET, [](AsyncWebServerRequest *request){ 
-    mod=false;
-    request->send(0);
-  });
-            
-
-  server.on("/MIN", HTTP_POST, [](AsyncWebServerRequest *request){
-            String min = request->arg("minutos");
-            String seg = request->arg("segundos");
-            temporizador(min.toInt(),seg.toInt());
-            request->redirect("/HORARIO");  
-            });  
-
         
   
   server.begin();
 
   
-  
 }  
 
-void temporizador(int min, int seg){
-  for(int i=0; i<min; i++){
-    for(int j=0; j<60; j++){
-        Serial.print(i);
-        Serial.print(":");
-        Serial.print(j);
-        delay(1000);
-    }
-  }
-}
 
 void loop() {
-  datoVal = analogRead(PIN_LM35);
-  float datoC=datoVal*factor;
-  if(mod==true){
-    if (datoC>(valor*1.05)){
-      digitalWrite(rele, LOW);    
-      digitalWrite(rele2, HIGH);
-      digitalWrite(rele3, HIGH);
-      estado="1";
-    }else if (datoC<(valor*0.95)){
-      digitalWrite(rele, HIGH);    
-      digitalWrite(rele2,LOW);
-      digitalWrite(rele3,LOW);
-      estado="2";
-    }
-  }else {
-    estado="0";
-  }
-  delay (1000);
+
   
 }
