@@ -143,13 +143,18 @@ void setInstruction(int servo, int value){
   int tama=sizeof(motores[]);
 for(int j=0; j<tama;j++){
   if(motores[j]==0){
-    state1=valores[j];
+    state1=valores[0];
+    state2=valores[0];
+    state3=valores[0];
+    state4=valores[0];
   } else
   if(motores[j]==1){
-    state2=valores[j];
+    state1=valores[j];
   } else if(motorees[j]==2){
-    state3=valores[j];
+    state2=valores[j];
   } else if(motores[j]==3){
+    state3=valores[j];
+  }else if(motores[j]==4){
     state4=valores[j];
   }
 }
