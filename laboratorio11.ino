@@ -16,6 +16,8 @@ Servo
  #define COUNT_HIGH 7864
  #define TIMER_WIDTH 16
  int i;
+ motores=[motor1, motor4, motor1];
+ valores=[0, 0, 0];
 
  /*
   * PWMVALUE
