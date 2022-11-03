@@ -83,38 +83,14 @@ void initWiFi() {
   Serial.println(WiFi.localIP());
 }
 
-void elegirColor(int color){
-  if(color == 1) { //Hacer color rojo
-digitalWrite(ledRojo,255);
-digitalWrite(ledVerde,0);
-digitalWrite(ledAzul,0);
-  }else if (color==2){
- 
-//Hacer color verde
-digitalWrite(ledRojo,0);
-digitalWrite(ledVerde,255);
-digitalWrite(ledAzul,0);
-  }else if (color ==3){
- 
-//Hacer color azul
-digitalWrite(ledRojo,0);
-digitalWrite(ledVerde,0);
-digitalWrite(ledAzul,255);
-  }else if (color==4){
-//Hacer color amarillo
-digitalWrite(ledRojo,255);
-digitalWrite(ledVerde,255);
-digitalWrite(ledAzul,0);
-  
- }else if (color==5){
-//Hacer color magenta
-digitalWrite(ledRojo,255);
-digitalWrite(ledVerde,0);
-digitalWrite(ledAzul,255);
- }
+//add funtion to move servo
+void moveServo(int servo, int value){
+  if(value>0){
+    digitalWrite(servo, HIGH);
+    delay(value);
+    digitalWrite(servo, LOW);
+  } 
 }
-
-
  String getinfo(){
 
   info["dip"] = String(WiFi.localIP());
