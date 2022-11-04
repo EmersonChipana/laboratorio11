@@ -61,7 +61,7 @@ void moveServo(int servo, int value){
   if(x>valorant){ 
     
     for (x=COUNT_LOW ; x < COUNT_HIGH ; x=x+100)
-   {Serial.println("Iniciando proceso");
+   {
     valorant=x;
       ledcWrite(servo, x);       // sweep servo 1
    }
@@ -69,7 +69,7 @@ void moveServo(int servo, int value){
   } else if (value<valorant){
     valorant=x;
     for (x=COUNT_HIGH ; x > COUNT_LOW ; x=x-100)
-   {Serial.println("Iniciando proceso: reduciendo");
+   {
       ledcWrite(servo, x);       // sweep servo 1
    }
   }
@@ -77,21 +77,7 @@ void moveServo(int servo, int value){
     Serial.println("el servo se queda igual");
     valorant=x;
     ledcWrite(servo, x);       // sweep servo 1
-  }
-  if (servo == 1){
-    valor1 = value;
-    valorant=x;
-  }else if (servo == 2){
-    valor2 = value;
-    valorant=x;
-  }else if (servo == 3){
-    valor3 = value;
-    valorant=x;
-  }else if (servo == 4){
-    valor4 = value;
-    valorant=x;
-  }
-  
+  }  
 }
 
  String getinfo(){
@@ -120,11 +106,11 @@ void setup() {
 
   Serial.begin(115200); // inicializando el pouerto serial
 
-ledcSetup(1, 50, TIMER_WIDTH); // canal 1, 50 Hz, 16-bit width
+   ledcSetup(1, 50, TIMER_WIDTH); // canal 1, 50 Hz, 16-bit width
    ledcAttachPin(26, 1);   // GPIO 22 asignado al canal 1
    ledcSetup(2, 50, TIMER_WIDTH); // canal 2, 50 Hz, 16-bit width
    ledcAttachPin(25, 2);   // GPIO 19 asignado al canal 2
-ledcSetup(3, 50, TIMER_WIDTH); // canal 1, 50 Hz, 16-bit width
+   ledcSetup(3, 50, TIMER_WIDTH); // canal 1, 50 Hz, 16-bit width
    ledcAttachPin(32, 3);   // GPIO 22 asignado al canal 1
    ledcSetup(4, 50, TIMER_WIDTH); // canal 2, 50 Hz, 16-bit width
    ledcAttachPin(33, 4);   // GPIO 19 asignado al canal 2
@@ -176,26 +162,30 @@ ledcSetup(3, 50, TIMER_WIDTH); // canal 1, 50 Hz, 16-bit width
 
   //ADD HTTP POST HANDLER FOR SERVO
   server.on("/MOTOR1", HTTP_POST, [](AsyncWebServerRequest *request){
-    pwmValue = request->arg("valor1");
+    Serial.println("Se mueve servo 1");
+    pwmValue = request->arg("valor");
     valor1=pwmValue.toInt();
      moveServo(1,valor1);
     // moveServo(1,valor);
     
   }); 
   server.on("/MOTOR2", HTTP_POST, [](AsyncWebServerRequest *request){
-    pwmValue = request->arg("valor2");
+    Serial.println("Se mueve servo 2");
+    pwmValue = request->arg("valor");
     valor2=pwmValue.toInt();
     moveServo(2,valor2);
 
   }); 
   server.on("/MOTOR3", HTTP_POST, [](AsyncWebServerRequest *request){
-    pwmValue = request->arg("valor3");
+    Serial.println("Se mueve servo 3");
+    pwmValue = request->arg("valor");
     valor3=pwmValue.toInt();
     moveServo(3,valor3);
    
   }); 
   server.on("/MOTOR4", HTTP_POST, [](AsyncWebServerRequest *request){
-    pwmValue = request->arg("valor4");
+    Serial.println("Se mueve servo 4");
+    pwmValue = request->arg("valor");
     valor4=pwmValue.toInt();
     moveServo(4,valor4);
    // moveServo(4,valor);   

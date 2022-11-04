@@ -9,6 +9,7 @@
         <link href="https://fonts.googleapis.com/css2?family=Bungee+Spice&family=Righteous&display=swap" rel="stylesheet">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
         <script src="http://cdn.rawgit.com/Mikhus/canvas-gauges/gh-pages/download/2.1.7/all/gauge.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <link rel="stylesheet" type="text/css" href="style.css">
     </head>
     <body>
@@ -60,11 +61,11 @@
                 </div>
                 <div class="col">
                     <h2>BRAZO</h2>
-                    <img src="https://github.com/EmersonChipana/Datos/blob/main/brazo2.png?raw=true" alt="" class="brazo2 mt-3" width="250">
+                    <img src="https://github.com/EmersonChipana/Datos/blob/main/brazo2.png?raw=true" alt="" id="brazo2" class="brazo2 mt-3" width="250">
                 </div>
                 <div class="col">
                     <h2>GARRA</h2>
-                    <img src="https://cdn-icons-png.flaticon.com/512/44/44707.png" width="250" class="garra mt-3">
+                    <img src="https://cdn-icons-png.flaticon.com/512/44/44707.png" width="250" class="garra mt-3" id="garra">
                 </div>
             </div>
         </div>
@@ -74,7 +75,7 @@
         <div class="container w-50">
             <div class="row mb-5">
                 <label for="motor" class="form-label" id="lableMotor">Base del motor</label>
-                <input type="range" class="form-range" min="0" max="100" id="motor" onchange="setValor(this.value)">
+                <input type="range" class="form-range" min="0" max="180" id="motor" onchange="setValor(this.value)">
             </div>
             <h2 class="text-center" id="valor">Valor: </h2>
             <div class="row mt-5">
@@ -86,16 +87,16 @@
                 </select>
             </div>
             <div class="row text-center">
-                <button type="button" class="btn btn-primary mt-5" id="btn1" onclick="enviar()">ENVIAR</button>
+                <button type="button" class="btn btn-primary mt-5" id="btn1" onclick="enviar()">AGREGAR</button>
             </div>
         </div>
         
         <hr>
 
         <h1 class="text-center">Instrucciones</h1>
-        <div class="container text-center w-50 bg-light">
+        <div class="container text-center w-50">
             <div class="row">
-                <table class="table-light" id="instrucciones">
+                <table class="table table-light table-striped" id="instrucciones">
                     <thead>
                         <tr>
                         <th scope="col">#</th>
@@ -104,9 +105,16 @@
                         </tr>
                     </thead>
                     <tbody>
-                        
+
                     </tbody>
                 </table>
+            </div>
+        </div>
+        <hr>
+
+        <div class="container w-50">
+            <div class="row text-center">
+                <button type="button" class="btn btn-primary" id="btn1" onclick="iniciarInstrucciones()">INICIAR</button>
             </div>
         </div>
         <hr>
@@ -160,7 +168,31 @@
 
         <script>
             var motores = [];
+            var num = [];
             var valores = [];
+            var contador = 0;
+
+            var valoresMotores = [0,0,0,0];
+
+            const time = 2000;
+
+            function getValueMotor(){
+                var xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        var myObj = JSON.parse(this.responseText);
+                        valoresMotores[0] = myObj.mot1;
+                        valoresMotores[1] = myObj.mot2;
+                        valoresMotores[2] = myObj.mot3;
+                        valoresMotores[3] = myObj.mot4;
+                    }
+                }; 
+                xhr.open("GET", "/VALORES", true);
+                xhr.send();
+
+            }
+
+            getValueMotor();
 
             var rssid = new RadialGauge({
                 renderTo: 'rssi',
@@ -247,7 +279,7 @@
                 xhr.send();
             }
 
-            setInterval(getDataConexion, 1000);
+            setInterval(getDataConexion, 10000);
 
             function setValor(valor){
                 document.getElementById("valor").innerHTML = "Valor: " + valor;
@@ -269,24 +301,168 @@
             }
 
             function enviar(){
+                var index = document.getElementsByTagName("select")[0].value;
                 const valor = document.getElementById("motor").value;
                 const motor = document.getElementById("lableMotor").textContent;
                 motores.push(motor);
                 valores.push(valor);
+                num.push(parseInt(index)+1);
                 setInstrucciones();
-                //To do: enviar datos al servidor
-
             }
 
             function setInstrucciones(){
                 var table = document.getElementById("instrucciones");
-                var row = table.insertRow(1);
-                var cell1 = row.insertCell(0);
-                var cell2 = row.insertCell(1);
-                var cell3 = row.insertCell(2);
-                cell1.innerHTML = motores.length;
-                cell2.innerHTML = motores[motores.length - 1];
-                cell3.innerHTML = valores[valores.length - 1];
+                table.innerHTML="";
+                for(let i=0; i<=motores.length-1; i++){
+                    var row = table.insertRow(i);
+                    var cell1 = row.insertCell(0);
+                    var cell2 = row.insertCell(1);
+                    var cell3 = row.insertCell(2);
+                    var cell4 = row.insertCell(3);
+                    cell1.innerHTML = i+1;
+                    cell2.innerHTML = motores[i];
+                    cell3.innerHTML = valores[i];
+                    cell4.innerHTML = "<button class='btn btn-danger' onclick='eliminar(this)'>Eliminar</button>";
+                }
+               
+            }
+
+            function eliminar(btn){
+                var row = btn.parentNode.parentNode;
+                row.parentNode.removeChild(row);
+                var index = row.rowIndex - 1;
+                motores.splice(index, 1);
+                valores.splice(index, 1);
+                num.splice(index, 1);
+                setInstrucciones();
+            }
+
+            function iniciarInstrucciones(){
+                for(let i=0; i<=motores.length-1; i++){
+                    setTimeout(() => {
+                        const dataString = "motor=" + num[i] + "&valor=" + valores[i];
+                        $.ajax({
+                            type: "POST",
+                            url: "/MOTOR"+num[i],
+                            data: dataString,
+                            success: function (response) {
+                                console.log(response);
+                            }
+                        });
+                        doAnimation(num[i], valores[i]);
+                        const index = num[i]-1;
+                        valoresMotores[index] = parseInt(valores[i]);
+                        console.log(valoresMotores);
+                    }, 5000*i);
+                }
+            }
+
+
+            function doAnimation(num, valor){
+                var valueMotor = valoresMotores[num];
+                var flag = false;
+                // Si el valor anterior es menor al actual true
+                // Si el valor anterior es mayor al actual false
+                if(valueMotor < valor){
+                    flag = true;
+                }
+                switch (num){
+                    case 1:
+                        rotate();
+                        break;
+                    case 2:
+                        if(flag==true){
+                            upBrazo();
+                        }else{
+                            downBrazo();
+                        }
+                        break;
+                    case 3:
+                        if(flag==true){
+                            rightBrazo2();
+                        }else{
+                            leftBrazo2();
+                        }  
+                        break;                      
+                    case 4:
+                        if(flag==true){
+                            resizeSmall();
+                        }else{
+                            resizeBig();
+                        }
+                        break;
+                }
+
+            }
+
+            function rotate(){
+                const rueda = document.getElementById("rueda");
+                rueda.style.animation = "rotateRight 2s infinite";
+                rueda.style.webkitAnimation = "rotateRight 2s infinite";
+                setTimeout(() => {
+                    rueda.style.animationPlayState = "paused";
+                    }, time);
+            }
+
+            function upBrazo(){
+                const brazo = document.getElementById("brazo");
+                brazo.src = "https://cdn-icons-png.flaticon.com/512/44/44674.png"
+                brazo.style.animation = "up 2s infinite";
+                brazo.style.webkitAnimation = "up 2s infinite infinite";
+                setTimeout(() => {
+                    brazo.style.animationPlayState = "paused";
+                    }, time);
+            }
+
+            function downBrazo(){
+                const brazo =document.getElementById("brazo");
+                brazo.src ="https://www.pngmart.com/files/15/Vector-Arrow-Down-PNG-Transparent-Image.png";
+                brazo.style.animation = "down 2s infinite";
+                brazo.style.webkitAnimation = "down 2s infinite";
+                setTimeout(() => {
+                    brazo.style.animationPlayState = "paused";
+                    }, time);
+                
+            }
+                      
+            function rightBrazo2(){
+                const brazo2 = document.getElementById("brazo2");
+                brazo2.src ="https://github.com/EmersonChipana/Datos/blob/main/brazo2.png?raw=true";
+                brazo2.style.animation = "right 2s infinite";
+                brazo2.style.webkitAnimation = "right 2s infinite";
+                setTimeout(() => {
+                    brazo2.style.animationPlayState = "paused";
+                    }, time);
+            }
+
+            function leftBrazo2(){
+                const brazo2 = document.getElementById("brazo2");
+                brazo2.src = "https://www.pngmart.com/files/3/Left-Arrow-PNG-File.png";
+                brazo2.style.animation = "left 2s infinite";
+                brazo2.style.webkitAnimation = "left 2s infinite";
+                setTimeout(() => {
+                    brazo2.style.animationPlayState = "paused";
+                    }, time);
+            }
+
+            function resizeSmall(){
+                const garra = document.getElementById("garra");
+                garra.src = "https://cdn-icons-png.flaticon.com/512/44/44707.png";
+                garra.style.animation = "resizeSmall 2s infinite";
+                garra.style.webkitAnimation = "resizeSmall 2s infinite";
+                setTimeout(() => {
+                    garra.style.animationPlayState = "paused";
+                    }, time);
+            }
+
+            function resizeBig(){
+                const garra = document.getElementById("garra");
+                garra.src = "https://cdn-icons-png.flaticon.com/512/44/44755.png";
+                garra.style.animation = "resizeBig 2s infinite";
+                garra.style.webkitAnimation = "resizeBig 2s infinite";
+                setTimeout(() => {
+                    garra.style.animationPlayState = "paused";
+                    }, time);
             }
 
             
