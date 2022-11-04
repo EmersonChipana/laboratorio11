@@ -4,9 +4,6 @@
 #include <ESPAsyncWebServer.h>
 #include <SPIFFS.h>
 
-
-boolean mod = false;
-String estado="0";
 int valor1 =0;
 int valor2 =0;
 int valor3 =0;
@@ -52,30 +49,48 @@ void initWiFi() {
   Serial.println(WiFi.localIP());
 }
 
+int gradeToPulse(int grade){
+  int pulse = map(grade, 0, 180, COUNT_LOW, COUNT_HIGH);
+  return pulse;
+}
+
 //add funtion to move servo
 void moveServo(int servo, int value){
+ int x= gradeToPulse(value);
  
-  if(value>valorant){ 
-    valorant=valor;
-    for (value=COUNT_LOW ; value < COUNT_HIGH ; value=value+100)
+  if(x>valorant){ 
+    
+    for (x=COUNT_LOW ; x < COUNT_HIGH ; x=x+100)
    {
-      ledcWrite(servo, value);       // sweep servo 1
-      delay(20);
+    valorant=x;
+      ledcWrite(servo, x);       // sweep servo 1
    }
    
   } else if (value<valorant){
-    valorant=valor;
-    for (value=COUNT_HIGH ; value > COUNT_LOW ; value=value-100)
+    valorant=x;
+    for (x=COUNT_HIGH ; x > COUNT_LOW ; x=x-100)
    {
-      ledcWrite(servo, value);       // sweep servo 1
-      delay(20);
+      ledcWrite(servo, x);       // sweep servo 1
    }
   }
   else if (value==valorant){
-    valorant=valor;
-    ledcWrite(servo, value);       // sweep servo 1
-    delay(20);
+    valorant=x;
+    ledcWrite(servo, x);       // sweep servo 1
   }
+  if (servo == 1){
+    valor1 = value;
+    valorant=x;
+  }else if (servo == 2){
+    valor2 = value;
+    valorant=x;
+  }else if (servo == 3){
+    valor3 = value;
+    valorant=x;
+  }else if (servo == 4){
+    valor4 = value;
+    valorant=x;
+  }
+  
 }
 
  String getinfo(){
