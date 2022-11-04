@@ -61,11 +61,11 @@
                 </div>
                 <div class="col">
                     <h2>BRAZO</h2>
-                    <img src="https://github.com/EmersonChipana/Datos/blob/main/brazo2.png?raw=true" alt="" class="brazo2 mt-3" width="250">
+                    <img src="https://github.com/EmersonChipana/Datos/blob/main/brazo2.png?raw=true" alt="" class="brazo2 mt-3" id="brazo2" width="250">
                 </div>
                 <div class="col">
                     <h2>GARRA</h2>
-                    <img src="https://cdn-icons-png.flaticon.com/512/44/44707.png" width="250" class="garra mt-3">
+                    <img src="https://cdn-icons-png.flaticon.com/512/44/44707.png" width="250" class="garra mt-3" id="garra">
                 </div>
             </div>
         </div>
@@ -76,21 +76,21 @@
             <div class="row my-5">
                 <div class="col">
                     <label for="motor1" class="form-label" id="label1">MOTOR 1</label>
-                    <input type="range" class="form-range" min="0" max="100" id="motor1" onchange="enviarValor(1)">
+                    <input type="range" class="form-range" min="0" max="180" id="motor1" onchange="enviarValor(1)">
                 </div>
                 <div class="col">
                     <label for="motor2" class="form-label" id="label2">MOTOR 2</label>
-                    <input type="range" class="form-range" min="0" max="100" id="motor2" onchange="enviarValor(2)">
+                    <input type="range" class="form-range" min="0" max="180" id="motor2" onchange="enviarValor(2)">
                 </div>
             </div>
             <div class="row my-5">
                 <div class="col">
                     <label for="motor3" class="form-label" id="label3">MOTOR 3</label>
-                    <input type="range" class="form-range" min="0" max="100" id="motor3" onchange="enviarValor(3)">
+                    <input type="range" class="form-range" min="0" max="180" id="motor3" onchange="enviarValor(3)">
                 </div>
                 <div class="col">
                     <label for="motor4" class="form-label" id="label4">MOTOR 4</label>
-                    <input type="range" class="form-range" min="0" max="100" id="motor4" onchange="enviarValor(4)">
+                    <input type="range" class="form-range" min="0" max="180" id="motor4" onchange="enviarValor(4)">
                 </div>
             </div>
         </div>
@@ -145,6 +145,24 @@
         </div>
 
         <script>
+
+            var valoresMotores = [0,0,0,0];
+
+            function getValueMotor(){
+                var xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        var myObj = JSON.parse(this.responseText);
+                        valoresMotores[0] = myObj.mot1;
+                        valoresMotores[1] = myObj.mot2;
+                        valoresMotores[2] = myObj.mot3;
+                        valoresMotores[3] = myObj.mot4;
+                    }
+                }; 
+                xhr.open("GET", "/VALORES", true);
+                xhr.send();
+
+            }
 
             var rssid = new RadialGauge({
                 renderTo: 'rssi',
@@ -231,7 +249,7 @@
                 xhr.send();
             }
 
-            setInterval(getDataConexion, 10000);
+            setInterval(getDataConexion, 1000);
 
             //post with ajax
 
@@ -244,10 +262,120 @@
                     type: "POST",
                     url: "/MOTOR"+num,
                     data: dataString,
-                    success: function (response) {
-                        console.log(response);
-                    }
                 });
+                doAnimation(num, valor);
+                valoresMotores[num-1] = valor;
+            }
+
+            const time = 3000;
+
+
+
+            function doAnimation(num, valor){
+                var valueMotor = valoresMotores[num-1];
+                var flag = false;
+                // Si el valor anterior es menor al actual true
+                // Si el valor anterior es mayor al actual false
+                if(valueMotor < valor){
+                    flag = true;
+                }
+                switch (num){
+                    case 1:
+                        rotate();
+                        break;
+                    case 2:
+                        if(flag==true){
+                            upBrazo();
+                        }else{
+                            downBrazo();
+                        }
+                        break;
+                    case 3:
+                        if(flag==true){
+                            rightBrazo2();
+                        }else{
+                            leftBrazo2();
+                        }  
+                        break;                      
+                    case 4:
+                        if(flag==true){
+                            resizeSmall();
+                        }else{
+                            resizeBig();
+                        }
+                        break;
+                }
+
+            }
+
+            function rotate(){
+                const rueda = document.getElementById("rueda");
+                rueda.style.animation = "rotateRight 2s infinite";
+                rueda.style.webkitAnimation = "rotateRight 2s infinite";
+                setTimeout(() => {
+                    rueda.style.animationPlayState = "paused";
+                    }, time);
+            }
+
+            function upBrazo(){
+                const brazo = document.getElementById("brazo");
+                brazo.src = "https://cdn-icons-png.flaticon.com/512/44/44674.png";
+                brazo.style.animation = "up 2s infinite";
+                brazo.style.webkitAnimation = "up 2s infinite infinite";
+                setTimeout(() => {
+                    brazo.style.animationPlayState = "paused";
+                    }, time);
+            }
+
+            function downBrazo(){
+                const brazo =document.getElementById("brazo");
+                brazo.src ="https://www.pngmart.com/files/15/Vector-Arrow-Down-PNG-Transparent-Image.png";
+                brazo.style.animation = "down 2s infinite";
+                brazo.style.webkitAnimation = "down 2s infinite";
+                setTimeout(() => {
+                    brazo.style.animationPlayState = "paused";
+                    }, time);
+                
+            }
+                      
+            function rightBrazo2(){
+                const brazo2 = document.getElementById("brazo2");
+                brazo2.src ="https://github.com/EmersonChipana/Datos/blob/main/brazo2.png?raw=true";
+                brazo2.style.animation = "right 2s infinite";
+                brazo2.style.webkitAnimation = "right 2s infinite";
+                setTimeout(() => {
+                    brazo2.style.animationPlayState = "paused";
+                    }, time);
+            }
+
+            function leftBrazo2(){
+                const brazo2 = document.getElementById("brazo2");
+                brazo2.src = "https://www.pngmart.com/files/3/Left-Arrow-PNG-File.png";
+                brazo2.style.animation = "left 2s infinite";
+                brazo2.style.webkitAnimation = "left 2s infinite";
+                setTimeout(() => {
+                    brazo2.style.animationPlayState = "paused";
+                    }, time);
+            }
+
+            function resizeSmall(){
+                const garra = document.getElementById("garra");
+                garra.src = "https://cdn-icons-png.flaticon.com/512/44/44707.png";
+                garra.style.animation = "resizeSmall 2s infinite";
+                garra.style.webkitAnimation = "resizeSmall 2s infinite";
+                setTimeout(() => {
+                    garra.style.animationPlayState = "paused";
+                    }, time);
+            }
+
+            function resizeBig(){
+                const garra = document.getElementById("garra");
+                garra.src = "https://cdn-icons-png.flaticon.com/512/44/44755.png";
+                garra.style.animation = "resizeBig 2s infinite";
+                garra.style.webkitAnimation = "resizeBig 2s infinite";
+                setTimeout(() => {
+                    garra.style.animationPlayState = "paused";
+                    }, time);
             }
 
            

@@ -344,10 +344,7 @@
                         $.ajax({
                             type: "POST",
                             url: "/MOTOR"+num[i],
-                            data: dataString,
-                            success: function (response) {
-                                console.log(response);
-                            }
+                            data: dataString
                         });
                         doAnimation(num[i], valores[i]);
                         const index = num[i]-1;
@@ -394,6 +391,7 @@
                 }
 
             }
+        
 
             function rotate(){
                 const rueda = document.getElementById("rueda");
@@ -406,7 +404,7 @@
 
             function upBrazo(){
                 const brazo = document.getElementById("brazo");
-                brazo.src = "https://cdn-icons-png.flaticon.com/512/44/44674.png"
+                brazo.src = "https://cdn-icons-png.flaticon.com/512/44/44674.png";
                 brazo.style.animation = "up 2s infinite";
                 brazo.style.webkitAnimation = "up 2s infinite infinite";
                 setTimeout(() => {

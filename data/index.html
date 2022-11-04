@@ -214,6 +214,8 @@
 
             setInterval(getDataConexion, 1000);
 
+            const time = 3000;
+
             function iniciarAnim(){
                 rotate();
                 upBrazo();
@@ -234,68 +236,70 @@
                 rueda.style.webkitAnimation = "rotateRight 2s infinite";
                 setTimeout(() => {
                     rueda.style.animationPlayState = "paused";
-                    }, 3000);
+                    }, time);
             }
 
             function upBrazo(){
                 const brazo = document.getElementById("brazo");
+                brazo.src = "https://cdn-icons-png.flaticon.com/512/44/44674.png"
                 brazo.style.animation = "up 2s infinite";
-                brazo.style.webkitAnimation = "up 2s infinite";
+                brazo.style.webkitAnimation = "up 2s infinite infinite";
                 setTimeout(() => {
                     brazo.style.animationPlayState = "paused";
-                    }, 3000);
+                    }, time);
             }
 
             function downBrazo(){
                 const brazo =document.getElementById("brazo");
+                brazo.src ="https://www.pngmart.com/files/15/Vector-Arrow-Down-PNG-Transparent-Image.png";
                 brazo.style.animation = "down 2s infinite";
-                brazo.style.webkitAnimation = "down 2s";
+                brazo.style.webkitAnimation = "down 2s infinite";
                 setTimeout(() => {
-                    brazo.style.animation = "";
-                    brazo.style.webkitAnimation = "";
-                    }, 3000);
+                    brazo.style.animationPlayState = "paused";
+                    }, time);
                 
             }
                       
             function rightBrazo2(){
                 const brazo2 = document.getElementById("brazo2");
+                brazo2.src ="https://github.com/EmersonChipana/Datos/blob/main/brazo2.png?raw=true";
                 brazo2.style.animation = "right 2s infinite";
-                brazo2.style.webkitAnimation = "right 2s";
+                brazo2.style.webkitAnimation = "right 2s infinite";
                 setTimeout(() => {
-                    brazo2.style.animation = "";
-                    brazo2.style.webkitAnimation = "";
-                    }, 3000);
+                    brazo2.style.animationPlayState = "paused";
+                    }, time);
             }
 
             function leftBrazo2(){
                 const brazo2 = document.getElementById("brazo2");
+                brazo2.src = "https://www.pngmart.com/files/3/Left-Arrow-PNG-File.png";
                 brazo2.style.animation = "left 2s infinite";
-                brazo2.style.webkitAnimation = "left 2s";
+                brazo2.style.webkitAnimation = "left 2s infinite";
                 setTimeout(() => {
-                    brazo2.style.animation = "";
-                    brazo2.style.webkitAnimation = "";
-                    }, 3000);
+                    brazo2.style.animationPlayState = "paused";
+                    }, time);
             }
 
             function resizeSmall(){
                 const garra = document.getElementById("garra");
+                garra.src = "https://cdn-icons-png.flaticon.com/512/44/44707.png";
                 garra.style.animation = "resizeSmall 2s infinite";
-                garra.style.webkitAnimation = "resizeSmall 2s";
+                garra.style.webkitAnimation = "resizeSmall 2s infinite";
                 setTimeout(() => {
-                    garra.style.animation = "";
-                    garra.style.webkitAnimation = "";
-                    }, 3000);
+                    garra.style.animationPlayState = "paused";
+                    }, time);
             }
 
             function resizeBig(){
                 const garra = document.getElementById("garra");
+                garra.src = "https://cdn-icons-png.flaticon.com/512/44/44755.png";
                 garra.style.animation = "resizeBig 2s infinite";
-                garra.style.webkitAnimation = "resizeBig 2s";
+                garra.style.webkitAnimation = "resizeBig 2s infinite";
                 setTimeout(() => {
-                    garra.style.animation = "";
-                    garra.style.webkitAnimation = "";
-                    }, 3000);
+                    garra.style.animationPlayState = "paused";
+                    }, time);
             }
+
             
         </script>
         
