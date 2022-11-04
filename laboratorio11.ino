@@ -3,12 +3,14 @@
 #include <Arduino_JSON.h>
 #include <ESPAsyncWebServer.h>
 #include <SPIFFS.h>
-#include <stdlib.h>
+
 
 boolean mod = false;
 String estado="0";
-int valor=0;
-
+int valor1 =0;
+int valor2 =0;
+int valor3 =0;
+int valor3 =0;
 /*
 Servo
 */
@@ -16,43 +18,11 @@ Servo
  #define COUNT_HIGH 7864
  #define TIMER_WIDTH 16
  int i;
- int motores[20]={};
- int mot1=0;
- int mot2=0;
- int mot3=0;
- int mot4=0;
- int state1=0;
- int state2=0;
- int state3=0;
- int state4=0;
- int valores[20]={};
  int valorant = 0;
  int contador=  1;
 
- /*
-  * PWMVALUE
-  */
-#define PWM1_Ch    0    //canales
-#define PWM1_Res   8    //resolucion    
-#define PWM1_Freq  1000  //frecuencia
-#define PWM2_Ch    1
-#define PWM2_Res   8
-#define PWM2_Freq  1000
-#define PWM3_Ch    2
-#define PWM3_Res   8
-#define PWM3_Freq  1000
-int pwm1,pwm2,pwm3;
-int PWM1_DutyCycle = 0;
-
-
- int ahora1 = 1638;
-
-int ahora2 =1638;
 String pwmValue;
  
-
-int color=1;
-
 
 AsyncWebServer server(80);
 
@@ -61,9 +31,9 @@ AsyncWebServer server(80);
 // Variable to store the HTTP request
 String header;
  
-
 JSONVar info;
 JSONVar serv;
+
 
 
 void initWiFi() {
@@ -81,21 +51,6 @@ void initWiFi() {
   // Imprimimos la ip que le ha dado nuestro router
   Serial.println(WiFi.localIP());
 }
-/*
-void abrirJson(){
-  char json[] = "{\"sensor\":\"gps\",\"time\":1351824120,\"data\":[48.756080,2.302038]}";
-
-DynamicJsonDocument doc(1024);
-deserializeJson(doc, json);
-
-int motSer=doc["mot"][0];
-int movi=doc["mov"][0];
-const char* sensor = doc["sensor"];
-long time          = doc["time"];
-double latitude    = doc["data"][0];
-double longitude   = doc["data"][1];
-}
-*/
 
 //add funtion to move servo
 void moveServo(int servo, int value){
@@ -122,14 +77,7 @@ void moveServo(int servo, int value){
     delay(20);
   }
 }
-void setInstruction(int servo, int value){
-  int n=contador;
-    int motores[n]={servo};
-    int valores[n]={value};
-    moveServo(motores[n], valores[n]);
- contador++;
 
-}
  String getinfo(){
 
   info["dip"] = String(WiFi.localIP());
@@ -140,19 +88,16 @@ void setInstruction(int servo, int value){
   return jsonString;
 }
 
- String getserv(){
-  int tama=sizeof(motores);
-for(int j=0; j<tama;j++){
-  if(motores[j]==1){
-    state1=valores[j];
-  } else if(motores[j]==2){
-    state2=valores[j];
-  } else if(motores[j]==3){
-    state3=valores[j];
-  }else if(motores[j]==4){
-    state4=valores[j];
-  }
+serv["estado"]=String ();
+  serv["mot1"]   = String(valor1);
+  serv["mot2"] =  String(valor2);
+  serv["mot3"] = String(valor3) ; 
+  serv["mot4"]=String(valor4) ; 
+  String jsonString = JSON.stringify(serv);
+  return jsonString; 
 }
+
+
 
 serv["estado"]=String ();
 // Lectura de los datos del sensor
@@ -222,37 +167,37 @@ ledcSetup(3, 50, TIMER_WIDTH); // canal 1, 50 Hz, 16-bit width
     request->send(200, "application/json", json);
     json = String();
   });
-server.on("/VALORES", HTTP_GET, [](AsyncWebServerRequest *request){
-    String json = getserv();
+   server.on("/VALUES", HTTP_GET, [](AsyncWebServerRequest *request){
+    String json = getservo();
     request->send(200, "application/json", json);
     json = String();
-  }); 
+  });   
+
   //ADD HTTP POST HANDLER FOR SERVO
   server.on("/MOTOR1", HTTP_POST, [](AsyncWebServerRequest *request){
     pwmValue = request->arg("valor1");
     valor=pwmValue.toInt();
      setInstruction(1,valor);
-     moveServo(1,valor);
-    //request->redirect("/");    
+    // moveServo(1,valor);
+    
   }); 
   server.on("/MOTOR2", HTTP_POST, [](AsyncWebServerRequest *request){
     pwmValue = request->arg("valor2");
     valor=pwmValue.toInt();
     setInstruction(2,valor);
-    request->redirect("/");    
+
   }); 
   server.on("/MOTOR3", HTTP_POST, [](AsyncWebServerRequest *request){
     pwmValue = request->arg("valor3");
     valor=pwmValue.toInt();
     setInstruction(3,valor);
-    request->redirect("/");    
+   
   }); 
   server.on("/MOTOR4", HTTP_POST, [](AsyncWebServerRequest *request){
     pwmValue = request->arg("valor4");
     valor=pwmValue.toInt();
     setInstruction(4,valor);
-   // moveServo(4,valor);
-    request->redirect("/");    
+   // moveServo(4,valor);   
   }); 
         
   
@@ -263,53 +208,5 @@ server.on("/VALORES", HTTP_GET, [](AsyncWebServerRequest *request){
 
 
 void loop() {
-
-  EthernetClient client = server.available();
-  //----------------------------------------------------------------------------
-  if(client)
-  {
-    boolean currentLineIsBlank = true;
-    while (client.connected())
-    {
-      if(client.available())
-      { 
-        char c = client.read();
-        HTTP_req += c;
-        if(c == '\n' && currentLineIsBlank)
-        {
-          if(HTTP_req.indexOf("MOTOR") > -1) //AJAX request for motor values
-          {
-            moveServo();
-            AJAX_request(client);
-          }
-          //--------------------------------------------------------------------
-          else
-          {
-            HTML_webpage();
-            client.println(webPage);
-          }
-          //--------------------------------------------------------------------
-          Serial.print(HTTP_req);
-          HTTP_req = ""; //reset HTTP request string
-          break;
-        }
-        //----------------------------------------------------------------------
-        if(c == '\n') currentLineIsBlank = true;
-        else if(c != '\r') currentLineIsBlank = false;
-      }
-    }
-    delay(10);
-    client.stop(); //sever client connection with server
-  }
-}
-//==================================================================================
-void AJAX_request(EthernetClient client)
-{
-  client.println("Temp&nbsp;&nbsp;&nbsp;&nbsp;: ");
-  client.println(dht.readTemperature());
-  client.println("°C<br>Humidity: ");
-  client.println(int(dht.readHumidity()));
-  client.println("%");
-}
 
 }
