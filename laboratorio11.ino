@@ -61,7 +61,7 @@ void moveServo(int servo, int value){
   if(x>valorant){ 
     
     for (x=COUNT_LOW ; x < COUNT_HIGH ; x=x+100)
-   {
+   {Serial.println("Iniciando proceso");
     valorant=x;
       ledcWrite(servo, x);       // sweep servo 1
    }
@@ -69,11 +69,12 @@ void moveServo(int servo, int value){
   } else if (value<valorant){
     valorant=x;
     for (x=COUNT_HIGH ; x > COUNT_LOW ; x=x-100)
-   {
+   {Serial.println("Iniciando proceso: reduciendo");
       ledcWrite(servo, x);       // sweep servo 1
    }
   }
   else if (value==valorant){
+    Serial.println("el servo se queda igual");
     valorant=x;
     ledcWrite(servo, x);       // sweep servo 1
   }
