@@ -3,7 +3,7 @@
 #include <Arduino_JSON.h>
 #include <ESPAsyncWebServer.h>
 #include <SPIFFS.h>
-
+int valor=0;
 int valor1 =0;
 int valor2 =0;
 int valor3 =0;
