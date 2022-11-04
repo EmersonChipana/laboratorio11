@@ -3,7 +3,7 @@
 #include <Arduino_JSON.h>
 #include <ESPAsyncWebServer.h>
 #include <SPIFFS.h>
-int valor=0;
+
 int valor1 =0;
 int valor2 =0;
 int valor3 =0;
@@ -176,26 +176,26 @@ ledcSetup(3, 50, TIMER_WIDTH); // canal 1, 50 Hz, 16-bit width
   //ADD HTTP POST HANDLER FOR SERVO
   server.on("/MOTOR1", HTTP_POST, [](AsyncWebServerRequest *request){
     pwmValue = request->arg("valor1");
-    valor=pwmValue.toInt();
+    valor1=pwmValue.toInt();
      moveServo(1,valor1);
     // moveServo(1,valor);
     
   }); 
   server.on("/MOTOR2", HTTP_POST, [](AsyncWebServerRequest *request){
     pwmValue = request->arg("valor2");
-    valor=pwmValue.toInt();
+    valor2=pwmValue.toInt();
     moveServo(2,valor2);
 
   }); 
   server.on("/MOTOR3", HTTP_POST, [](AsyncWebServerRequest *request){
     pwmValue = request->arg("valor3");
-    valor=pwmValue.toInt();
+    valor3=pwmValue.toInt();
     moveServo(3,valor3);
    
   }); 
   server.on("/MOTOR4", HTTP_POST, [](AsyncWebServerRequest *request){
     pwmValue = request->arg("valor4");
-    valor=pwmValue.toInt();
+    valor4=pwmValue.toInt();
     moveServo(4,valor4);
    // moveServo(4,valor);   
   }); 
