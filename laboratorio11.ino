@@ -16,7 +16,7 @@ Servo
  #define COUNT_HIGH 7864
  #define TIMER_WIDTH 16
  int i;
- int motores=[];
+ int motores[20]={};
  int mot1=0;
  int mot2=0;
  int mot3=0;
@@ -25,7 +25,7 @@ Servo
  int state2=0;
  int state3=0;
  int state4=0;
- int valores=[];
+ int valores[20]={};
  int valorant = 0;
  int contador=  1;
 
@@ -123,9 +123,10 @@ void moveServo(int servo, int value){
   }
 }
 void setInstruction(int servo, int value){
-    int motores[contador]=servo;
-    int valores[contador]=value;
-    moveServo(motores[contador], valores[contador]);
+  int n=contador;
+    int motores[n]={servo};
+    int valores[n]={value};
+    moveServo(motores[n], valores[n]);
  contador++;
 
 }
@@ -140,7 +141,7 @@ void setInstruction(int servo, int value){
 }
 
  String getserv(){
-  int tama=sizeof(motores[]);
+  int tama=sizeof(motores);
 for(int j=0; j<tama;j++){
   if(motores[j]==1){
     state1=valores[j];
@@ -231,7 +232,8 @@ server.on("/VALORES", HTTP_GET, [](AsyncWebServerRequest *request){
     pwmValue = request->arg("valor1");
     valor=pwmValue.toInt();
      setInstruction(1,valor);
-    request->redirect("/");    
+     moveServo(1,valor);
+    //request->redirect("/");    
   }); 
   server.on("/MOTOR2", HTTP_POST, [](AsyncWebServerRequest *request){
     pwmValue = request->arg("valor2");
@@ -262,17 +264,52 @@ server.on("/VALORES", HTTP_GET, [](AsyncWebServerRequest *request){
 
 void loop() {
 
-  for (i=COUNT_LOW ; i < COUNT_HIGH ; i=i+100)
-   {
-      ledcWrite(1, i);       // sweep servo 1
-      delay(20);
-   }
-    
-   for (i=COUNT_HIGH ; i > COUNT_LOW ; i=i-100)
-   {
-      ledcWrite(1, i);       // sweep servo 2
-      delay(20);
-   }
-
+  EthernetClient client = server.available();
+  //----------------------------------------------------------------------------
+  if(client)
+  {
+    boolean currentLineIsBlank = true;
+    while (client.connected())
+    {
+      if(client.available())
+      { 
+        char c = client.read();
+        HTTP_req += c;
+        if(c == '\n' && currentLineIsBlank)
+        {
+          if(HTTP_req.indexOf("MOTOR") > -1) //AJAX request for motor values
+          {
+            moveServo();
+            AJAX_request(client);
+          }
+          //--------------------------------------------------------------------
+          else
+          {
+            HTML_webpage();
+            client.println(webPage);
+          }
+          //--------------------------------------------------------------------
+          Serial.print(HTTP_req);
+          HTTP_req = ""; //reset HTTP request string
+          break;
+        }
+        //----------------------------------------------------------------------
+        if(c == '\n') currentLineIsBlank = true;
+        else if(c != '\r') currentLineIsBlank = false;
+      }
+    }
+    delay(10);
+    client.stop(); //sever client connection with server
+  }
+}
+//==================================================================================
+void AJAX_request(EthernetClient client)
+{
+  client.println("Temp&nbsp;&nbsp;&nbsp;&nbsp;: ");
+  client.println(dht.readTemperature());
+  client.println("°C<br>Humidity: ");
+  client.println(int(dht.readHumidity()));
+  client.println("%");
+}
 
 }
