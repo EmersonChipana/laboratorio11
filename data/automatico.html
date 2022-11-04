@@ -330,7 +330,7 @@
             function eliminar(btn){
                 var row = btn.parentNode.parentNode;
                 row.parentNode.removeChild(row);
-                var index = row.rowIndex - 1;
+                var index = row.rowIndex;
                 motores.splice(index, 1);
                 valores.splice(index, 1);
                 num.splice(index, 1);
