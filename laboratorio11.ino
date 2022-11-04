@@ -10,7 +10,7 @@ String estado="0";
 int valor1 =0;
 int valor2 =0;
 int valor3 =0;
-int valor3 =0;
+int valor4 =0;
 /*
 Servo
 */
@@ -87,7 +87,7 @@ void moveServo(int servo, int value){
   String jsonString = JSON.stringify(info);
   return jsonString;
 }
-
+String getservo(){
 serv["estado"]=String ();
   serv["mot1"]   = String(valor1);
   serv["mot2"] =  String(valor2);
@@ -96,21 +96,6 @@ serv["estado"]=String ();
   String jsonString = JSON.stringify(serv);
   return jsonString; 
 }
-
-
-
-serv["estado"]=String ();
-// Lectura de los datos del sensor
-  serv["mot1"]   = String(state1);
-   // Convirtiendo los datos del ADC a    milivoltios
-  serv["mot2"] =  String(state2);
-  // Convirtiendo el voltaje al temperatura en °C
-  serv["mot3"] = String(state3) ; 
-  serv["mot4"]=String(state4) ; 
-  String jsonString = JSON.stringify(serv);
-  return jsonString; 
-}
-
 
 
 
@@ -177,26 +162,26 @@ ledcSetup(3, 50, TIMER_WIDTH); // canal 1, 50 Hz, 16-bit width
   server.on("/MOTOR1", HTTP_POST, [](AsyncWebServerRequest *request){
     pwmValue = request->arg("valor1");
     valor=pwmValue.toInt();
-     setInstruction(1,valor);
+     moveServo(1,valor1);
     // moveServo(1,valor);
     
   }); 
   server.on("/MOTOR2", HTTP_POST, [](AsyncWebServerRequest *request){
     pwmValue = request->arg("valor2");
     valor=pwmValue.toInt();
-    setInstruction(2,valor);
+    moveServo(2,valor2);
 
   }); 
   server.on("/MOTOR3", HTTP_POST, [](AsyncWebServerRequest *request){
     pwmValue = request->arg("valor3");
     valor=pwmValue.toInt();
-    setInstruction(3,valor);
+    moveServo(3,valor3);
    
   }); 
   server.on("/MOTOR4", HTTP_POST, [](AsyncWebServerRequest *request){
     pwmValue = request->arg("valor4");
     valor=pwmValue.toInt();
-    setInstruction(4,valor);
+    moveServo(4,valor4);
    // moveServo(4,valor);   
   }); 
         
