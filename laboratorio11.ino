@@ -57,10 +57,10 @@ int gradeToPulse(int grade){
 //add funtion to move servo
 void moveServo(int servo, int value){
  int x= gradeToPulse(value);
- 
+ int y;
   if(x>valorant){ 
     
-    for (x=COUNT_LOW ; x < COUNT_HIGH ; x=x+100)
+    for (y=COUNT_LOW ; y < COUNT_HIGH ; y=y+100)
    {
     valorant=x;
       ledcWrite(servo, x);       // sweep servo 1
@@ -68,7 +68,7 @@ void moveServo(int servo, int value){
    
   } else if (value<valorant){
     valorant=x;
-    for (x=COUNT_HIGH ; x > COUNT_LOW ; x=x-100)
+    for (y=COUNT_HIGH ; y > COUNT_LOW ; y=y-100)
    {
       ledcWrite(servo, x);       // sweep servo 1
    }
