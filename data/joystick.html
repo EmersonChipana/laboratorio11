@@ -46,7 +46,26 @@
 
         <hr>
 
-        <h1 class="text-center">MODO MANUAL</h1>
+        <h1 class="text-center">JOYSTICK</h1>
+
+        <hr>
+
+        <div class="container text-center">
+            <div class="row">
+                <div class="col">
+                    <h1>JOYSTICK 1</h1>
+                    <div class="JoystickL" id="JoystickL"></div>
+                    <h2 id="x">X: </h2>
+                    <h2 id="y">Y: </h2>
+                </div>
+                <div class="col">
+                    <h1>JOYSTICK 2</h1>
+                    <div class="JoystickR" id="JoystickR"></div>
+                    <h2 id="x1">X: </h2>
+                    <h2 id="y2">Y: </h2>
+                </div>
+            </div>
+        </div>
 
         <hr>
 
@@ -56,73 +75,30 @@
                 <div class="col">
                     <h2>PLATAFORMA</h2>
                     <img src="https://github.com/EmersonChipana/Datos/blob/main/eje.png?raw=true" id="rueda" class="rueda" alt="" width="300">
+                    <h2 id="ang1">°</h2>
                 </div>
                 <div class="col">
                     <h2>Brazo</h2>
                     <img src="https://cdn-icons-png.flaticon.com/512/44/44674.png" alt="" id="brazo"class="brazo mt-3" width="250">
+                    <h2 id="ang2">°</h2>
 
                 </div>
                 <div class="col">
                     <h2>BRAZO</h2>
-                    <img src="https://github.com/EmersonChipana/Datos/blob/main/brazo2.png?raw=true" alt="" class="brazo2 mt-3" id="brazo2" width="250">
+                    <img src="https://github.com/EmersonChipana/Datos/blob/main/brazo2.png?raw=true" alt="" id="brazo2" class="brazo2 mt-3" width="250">
+                    <h2 id="ang3">°</h2>
                 </div>
                 <div class="col">
                     <h2>GARRA</h2>
                     <img src="https://cdn-icons-png.flaticon.com/512/44/44707.png" width="250" class="garra mt-3" id="garra">
+                    <h2 id="ang4">°</h2>
                 </div>
             </div>
         </div>
 
         <hr>
-        <h1 class="text-center">Motores</h1>
-        <div class="container">
-            <div class="row my-5">
-                <div class="col">
-                    <label for="motor1" class="form-label" id="label1">MOTOR 1</label>
-                    <input type="range" class="form-range" min="0" max="180" id="motor1" onchange="enviarValor(1)">
-                </div>
-                <div class="col">
-                    <label for="motor2" class="form-label" id="label2">MOTOR 2</label>
-                    <input type="range" class="form-range" min="0" max="180" id="motor2" onchange="enviarValor(2)">
-                </div>
-            </div>
-            <div class="row my-5">
-                <div class="col">
-                    <label for="motor3" class="form-label" id="label3">MOTOR 3</label>
-                    <input type="range" class="form-range" min="0" max="180" id="motor3" onchange="enviarValor(3)">
-                </div>
-                <div class="col">
-                    <label for="motor4" class="form-label" id="label4">MOTOR 4</label>
-                    <input type="range" class="form-range" min="0" max="180" id="motor4" onchange="enviarValor(4)">
-                </div>
-            </div>
-        </div>
         
-        <hr>
-       
-
-        <h1 class="text-center">Datos de conexión</h1>
-
-        <div class="container text-center">
-            <div class="row">
-                <div class="col">
-                    <h1>NOMBRE</h1>
-                    <h3 id="ssid"></h3>
-                </div>
-                <div class="col">
-                    <h1>POTENCIA</h1>
-                    <canvas id="rssi"></canvas>
-                </div>
-                <div class="col">
-                    <h1>IP</h1>
-                    <h3 id="ip"></h3>
-                </div>
-                <div class="col">
-                    <h1>ESTADO</h1>
-                    <h3 id="status"></h3>
-                </div>
-            </div>
-        </div>
+        
         
         <hr>
 
@@ -147,25 +123,126 @@
             <small>IOT II-2022</small>
         </div>
 
+        <script src="./joy.js"></script>
         <script>
 
-            var valoresMotores = [0,0,0,0];
+            var x = document.getElementById("x");
+            var y = document.getElementById("y");
+            var x1 = document.getElementById("x1");
+            var y2 = document.getElementById("y2");
 
-            function getValueMotor(){
-                var xhr = new XMLHttpRequest();
-                xhr.onreadystatechange = function() {
-                    if (this.readyState == 4 && this.status == 200) {
-                        var myObj = JSON.parse(this.responseText);
-                        valoresMotores[0] = myObj.mot1;
-                        valoresMotores[1] = myObj.mot2;
-                        valoresMotores[2] = myObj.mot3;
-                        valoresMotores[3] = myObj.mot4;
+            var ang1 = document.getElementById("ang1");
+            var ang2 = document.getElementById("ang2");
+            var ang3 = document.getElementById("ang3");
+            var ang4 = document.getElementById("ang4");
+
+            //valore entre 0 y 180
+            var val1 = 0;
+            var val2 = 0;
+            var val3 = 0;
+            var val4 = 0;
+
+
+            var stickData1x = 0;
+            var stickData1y = 0;
+            var stickData2x = 0;
+            var stickData2y = 0;
+
+            var ant1x = 0;
+            var ant1y = 0;
+            var ant2x = 0;
+            var ant2y = 0;
+
+
+            var joystickL = new JoyStick('JoystickL',{}, function(stickData){
+                x.textContent = "X: "+ stickData.x;
+                y.textContent = "Y: "+ stickData.y;
+                stickData1x = stickData.x;
+                stickData1y = stickData.y;
+            });
+
+            var joystickR = new JoyStick('JoystickR',{}, function(stickData){
+                x1.textContent = "X: "+ stickData.x;
+                y2.textContent = "Y: "+ stickData.y;
+                stickData2x = stickData.x;
+                stickData2y = stickData.y;
+                
+            });
+
+            const incremento = 5;
+
+            setInterval(()=>{
+                if(stickData1x !=0 && stickData1y !=0){
+                    if(stickData1x > 20){
+                        if(val1 < 180){
+                            val1 += incremento;
+                        }
+                    }else if(stickData1x < -20){
+                        if(val1 > 0){
+                            val1 -= incremento;
+                        }
+                    } 
+                    
+                    if(stickData1y > 20){
+                        if(val2 < 180){
+                            val2 += incremento;
+                        }
+                    }else if(stickData1y < -20){
+                        if(val2 > 0){
+                            val2 -= incremento;
+                        }
                     }
-                }; 
-                xhr.open("GET", "/VALORES", true);
-                xhr.send();
+                }
+                if(stickData2x!=0 && stickData2y!=0){
+                    if(stickData2x > 20){
+                        if(val3 < 180){
+                            val3 += incremento;
+                        }
+                    }else if(stickData2x < -20){
+                        if(val3 > 0){
+                            val3 -= incremento;
+                        }
+                    } 
+                    
+                    if(stickData2y > 20){
+                        if(val4 < 180){
+                            val4 += incremento;
+                        }
+                    }else if(stickData2y < -20){
+                        if(val4 > 0){
+                            val4 -= incremento;
+                        }
+                    }
+                }
+                ang1.textContent = val1 + "°";
+                ang2.textContent = val2 + "°";
+                ang3.textContent = val3 + "°";
+                ang4.textContent = val4 + "°";
+                
 
-            }
+            },100);
+
+
+            setInterval(() =>{
+                if(ant1x != val1){
+                    enviarValor(1,val1);
+                    ant1x = val1;
+                }
+                if(ant1y != val2){
+                    enviarValor(2,val2);
+                    ant1y = val2;
+                }
+                if(ant2x != val3){
+                    enviarValor(3,val3);
+                    ant2x = val3;
+                }
+                if(ant2y != val4){
+                    enviarValor(4,val4);
+                    ant2y = val4;
+                }
+            },1500);
+            
+
 
             var rssid = new RadialGauge({
                 renderTo: 'rssi',
@@ -252,14 +329,10 @@
                 xhr.send();
             }
 
-            setInterval(getDataConexion, 1000);
+            setInterval(getDataConexion, 10000);
 
-            //post with ajax
-
-            function enviarValor(num){
+            function enviarValor(num, valor){
                 const data = "motor"+num;
-                var valor = document.getElementById(data).value;
-                document.getElementById("label"+num).textContent = "MOTOR "+num+" : "+valor;
                 var dataString = "motor="+num+"&valor="+valor;
                 $.ajax({
                     type: "POST",
@@ -267,15 +340,17 @@
                     data: dataString,
                 });
                 doAnimation(num, valor);
-                valoresMotores[num-1] = valor;
             }
 
-            const time = 3000;
+
+
+
+
 
 
 
             function doAnimation(num, valor){
-                var valueMotor = valoresMotores[num-1];
+                var valueMotor = valoresMotores[num];
                 var flag = false;
                 // Si el valor anterior es menor al actual true
                 // Si el valor anterior es mayor al actual false
@@ -310,6 +385,7 @@
                 }
 
             }
+        
 
             function rotate(){
                 const rueda = document.getElementById("rueda");
@@ -381,13 +457,10 @@
                     }, time);
             }
 
-           
-
-
             
         </script>
         
-        
+
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
     </body>
 </html>

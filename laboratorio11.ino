@@ -138,15 +138,20 @@ void setup() {
   
   
   server.on("/AUTOMATICO", HTTP_GET, [](AsyncWebServerRequest *request){
-
     request->send(SPIFFS, "/automatico.html",String(), false);
+  }); 
 
-  
+  server.on("/JOYSTICK", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/joystick.html",String(), false);
   }); 
    
   server.on("/style.css", HTTP_GET, [](AsyncWebServerRequest *request){
             request->send(SPIFFS, "/style.css", "text/css");
-            });      
+            });   
+
+  server.on("/joy.js", HTTP_GET, [](AsyncWebServerRequest *request){
+            request->send(SPIFFS, "/joy.js", "text/js");
+            });  
 
 
    server.on("/INFO", HTTP_GET, [](AsyncWebServerRequest *request){

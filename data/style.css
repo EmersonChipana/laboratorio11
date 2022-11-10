@@ -96,3 +96,21 @@ h2{
 }
 
 
+.JoystickL{
+    width: 200px;
+    height: 200px;
+    border: 10px solid black;
+    border-radius: 50%;
+    margin: 0 auto;
+    
+}
+
+
+
+.JoystickR{
+    width: 200px;
+    height: 200px;
+    border: 10px solid black;
+    margin: 0 auto;
+    border-radius: 50%;
+}
