@@ -107,9 +107,9 @@ void setup() {
   Serial.begin(115200); // inicializando el pouerto serial
 
    ledcSetup(1, 50, TIMER_WIDTH); // canal 1, 50 Hz, 16-bit width
-   ledcAttachPin(26, 1);   // GPIO 22 asignado al canal 1
+   ledcAttachPin(25, 1);   // GPIO 22 asignado al canal 1
    ledcSetup(2, 50, TIMER_WIDTH); // canal 2, 50 Hz, 16-bit width
-   ledcAttachPin(25, 2);   // GPIO 19 asignado al canal 2
+   ledcAttachPin(26, 2);   // GPIO 19 asignado al canal 2
    ledcSetup(3, 50, TIMER_WIDTH); // canal 1, 50 Hz, 16-bit width
    ledcAttachPin(32, 3);   // GPIO 22 asignado al canal 1
    ledcSetup(4, 50, TIMER_WIDTH); // canal 2, 50 Hz, 16-bit width
