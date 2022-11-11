@@ -173,7 +173,7 @@
 
             setInterval(()=>{
                 if(stickData1x !=0 && stickData1y !=0){
-                    if(stickData1x > 0){
+                    if(stickData1x > 35){
                         if(val1 < 180){
                             val1 += incremento;
                         }
@@ -224,21 +224,21 @@
 
 
             setInterval(() =>{
-                const time=500;
+                const time=100;
                 if(ant1x != val1){
                     enviarValor(1,val1,time);
                     ant1x = val1;
                 }
                 if(ant1y != val2){
-                    enviarValor(2,val2,time*2);
+                    enviarValor(2,val2,time);
                     ant1y = val2;
                 }
                 if(ant2x != val3){
-                    enviarValor(3,val3,time*3);
+                    enviarValor(3,val3,time);
                     ant2x = val3;
                 }
                 if(ant2y != val4){
-                    enviarValor(4,val4,time*4);
+                    enviarValor(4,val4,time);
                     ant2y = val4;
                 }
             },2000);
