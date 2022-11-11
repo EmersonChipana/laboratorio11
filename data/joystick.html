@@ -173,42 +173,42 @@
 
             setInterval(()=>{
                 if(stickData1x !=0 && stickData1y !=0){
-                    if(stickData1x > 20){
+                    if(stickData1x > 0){
                         if(val1 < 180){
                             val1 += incremento;
                         }
-                    }else if(stickData1x < -20){
+                    }else if(stickData1x < -35){
                         if(val1 > 0){
                             val1 -= incremento;
                         }
                     } 
                     
-                    if(stickData1y > 20){
+                    if(stickData1y > 35){
                         if(val2 < 180){
                             val2 += incremento;
                         }
-                    }else if(stickData1y < -20){
+                    }else if(stickData1y < -35){
                         if(val2 > 0){
                             val2 -= incremento;
                         }
                     }
                 }
                 if(stickData2x!=0 && stickData2y!=0){
-                    if(stickData2x > 20){
+                    if(stickData2x > 35){
                         if(val3 < 180){
                             val3 += incremento;
                         }
-                    }else if(stickData2x < -20){
+                    }else if(stickData2x < -35){
                         if(val3 > 0){
                             val3 -= incremento;
                         }
                     } 
                     
-                    if(stickData2y > 20){
+                    if(stickData2y > 35){
                         if(val4 < 180){
                             val4 += incremento;
                         }
-                    }else if(stickData2y < -20){
+                    }else if(stickData2y < -35){
                         if(val4 > 0){
                             val4 -= incremento;
                         }
@@ -240,7 +240,7 @@
                     enviarValor(4,val4);
                     ant2y = val4;
                 }
-            },1500);
+            },2000);
             
 
 
@@ -339,7 +339,7 @@
                     url: "/MOTOR"+num,
                     data: dataString,
                 });
-                doAnimation(num, valor);
+               // doAnimation(num, valor);
             }
 
 
