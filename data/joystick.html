@@ -224,20 +224,21 @@
 
 
             setInterval(() =>{
+                const time=500;
                 if(ant1x != val1){
-                    enviarValor(1,val1);
+                    enviarValor(1,val1,time);
                     ant1x = val1;
                 }
                 if(ant1y != val2){
-                    enviarValor(2,val2);
+                    enviarValor(2,val2,time*2);
                     ant1y = val2;
                 }
                 if(ant2x != val3){
-                    enviarValor(3,val3);
+                    enviarValor(3,val3,time*3);
                     ant2x = val3;
                 }
                 if(ant2y != val4){
-                    enviarValor(4,val4);
+                    enviarValor(4,val4,time*4);
                     ant2y = val4;
                 }
             },2000);
@@ -331,15 +332,17 @@
 
             setInterval(getDataConexion, 10000);
 
-            function enviarValor(num, valor){
+            function enviarValor(num, valor, time){
                 const data = "motor"+num;
                 var dataString = "motor="+num+"&valor="+valor;
-                $.ajax({
+                setInterval(()=>{
+                    $.ajax({
                     type: "POST",
                     url: "/MOTOR"+num,
                     data: dataString,
                 });
-               // doAnimation(num, valor);
+                }, time)
+               
             }
 
 
